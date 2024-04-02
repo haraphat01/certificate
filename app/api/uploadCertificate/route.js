@@ -44,7 +44,8 @@ handler.post(async (req, res) => {
 
     // Call the smart contract function to add the certificate
     const accounts = await web3.eth.getAccounts();
-    await contract.methods.addCertificate(req.body.name, req.body.studentId, fileHash).send({ from: accounts[0] });
+    const {name, studentId, studentYear, studentM} = req.body;
+    await contract.methods.addCertificate(name, studentId, studentM, studentYear, fileHash).send({ from: accounts[0] });
 
     // Clean up the uploaded file
     fs.unlinkSync(req.file.path);
