@@ -1,0 +1,154 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "certificateId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "studentName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "studentId",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "issuer",
+				"type": "address"
+			}
+		],
+		"name": "CertificateAdded",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_studentName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_studentId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_certificateHash",
+				"type": "string"
+			}
+		],
+		"name": "addCertificate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "certificateCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "certificates",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "studentName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "studentId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "certificateHash",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "issuer",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_certificateId",
+				"type": "uint256"
+			}
+		],
+		"name": "getCertificate",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "studentName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "studentId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "certificateHash",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "issuer",
+						"type": "address"
+					}
+				],
+				"internalType": "struct CertificateStorage.Certificate",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

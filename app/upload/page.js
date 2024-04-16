@@ -33,7 +33,6 @@ const CertificateUploadForm = () => {
         body: formData,
       });
 
-      
       if (response.ok) {
         alert('Certificate uploaded successfully!');
         router.push('/');
@@ -60,7 +59,7 @@ const CertificateUploadForm = () => {
           <input name="studentId" id="studentId" input {...register('studentId', { required: true })} />
           {/* {errors.studentId && <span>This field is required</span>} */}
         </div>
-        <div className={styles.formGroup}>
+        <div className={styles.formrGroup}>
           <label htmlFor="studentId">Major:</label>
           <input name="studentM" id="studentM" input {...register('studentM', { required: true })} />
           {/* {errors.studentId && <span>This field is required</span>} */}
@@ -75,8 +74,6 @@ const CertificateUploadForm = () => {
           <input type="file" name="certificate" id="certificate" onChange={onFileChange} />
           {/* {errors.certificate && <span>This field is required</span>} */}
         </div>
-
-        
         <button type="submit" className={styles.submitButton}>Upload Certificate</button>
       </form>
     </div>
