@@ -1,5 +1,38 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_studentName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_studentId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_studentM",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_studentYear",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_fileHash",
+				"type": "string"
+			}
+		],
+		"name": "addCertificate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -21,6 +54,24 @@
 				"type": "string"
 			},
 			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "studentM",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "studentYear",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "fileHash",
+				"type": "string"
+			},
+			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "issuer",
@@ -29,29 +80,6 @@
 		],
 		"name": "CertificateAdded",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_studentName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_studentId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_certificateHash",
-				"type": "string"
-			}
-		],
-		"name": "addCertificate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -93,7 +121,17 @@
 			},
 			{
 				"internalType": "string",
-				"name": "certificateHash",
+				"name": "studentM",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "studentYear",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "fileHash",
 				"type": "string"
 			},
 			{
@@ -134,7 +172,17 @@
 					},
 					{
 						"internalType": "string",
-						"name": "certificateHash",
+						"name": "studentM",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "studentYear",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "fileHash",
 						"type": "string"
 					},
 					{

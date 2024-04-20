@@ -1,71 +1,50 @@
-"use server"
 import { NextResponse } from 'next/server'
 import Web3 from 'web3';
-import multer from 'multer';
 import fs from 'fs';
+import { Readable } from 'stream';
 import path from 'path';
+import fetch from 'node-fetch'; // Import fetch for server-side usage
+// Use the api keys by specifying your api key and api secret
+const pinataSDK = require('@pinata/sdk');
+const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT });
 
-const storage = multer.diskStorage({
-  destination: function (_req_, _file_, _cb_) {
-    _cb_(null, 'uploads/');
-  },
-  filename: function (_req_, _file_, _cb_) {
-    _cb_(null, _file_.fieldname + '-' + Date.now());
-  },
-});
+export async function POST(req, res) {
+  let passedValue = await new Response(req.body).text();
+  let bodyreq = JSON.parse(passedValue);
+  const { name, studentId, studentYear, studentM } = bodyreq
 
-const upload = multer({ storage: storage });
+  try {
+   
+    const base64Image = bodyreq.imagePath;
+    const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+    const imageData = Buffer.from(base64Data, 'base64');
 
-export async function POST(req) {
+    const stream = new Readable();
+    stream.push(imageData);
+    stream.push(null); // Signal the end of the stream
+    const pinataRes = await pinata.pinFileToIPFS(stream, { pinataMetadata: { name:  name }});;
+   
+    const { IpfsHash } = await pinataRes.json();
+    console.log("Ipfs response", pinataRes);
+    // Connect to Ethereum via Web3
+    const web3 = new Web3(process.env.INFURA_URL);
+    const contractABI = require('../../contracts/CertificateStorag.json').abi;
+    const contractAddress = process.env.CONTRACT_ADDRESS;
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-  if (req.method === 'POST') {
-    try {
-      await new Promise((resolve, reject) => {
-        upload.single('certificate')(req, {}, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-      console.log(req)
-      if (!req.file) {
-        return NextResponse.json({ error: 'No file uploaded.' }, { status: 400 });
-      }
+    // Call the smart contract function to add the certificate
+    const accounts = await web3.eth.getAccounts();
+    await contract.methods.addCertificate(name, studentId, studentM, studentYear, IpfsHash).send({ from: accounts[0] });
 
-      const file = fs.readFileSync(path.resolve(req.file.path));
-     
-      const pinataRes = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.PINATA_JWT}`,
-        },
-        body: file,
-      });
+    // Clean up the uploaded file
+    fs.unlinkSync(req.file.path);
 
-      const { IpfsHash } = await pinataRes.json();
-      
-      // Connect to Ethereum via Web3
-      const web3 = new Web3(process.env.INFURA_URL);
-      const contractABI = require('../../contracts/CertificateStorage.json');
-      const contractAddress = process.env.CONTRACT_ADDRESS;
-      const contract = new web3.eth.Contract(contractABI, contractAddress);
-
-      // Call the smart contract function to add the certificate
-      const accounts = await web3.eth.getAccounts();
-      const { name, studentId, studentYear, studentM } = req.body;
-      await contract.methods.addCertificate(name, studentId, studentM, studentYear, IpfsHash).send({ from: accounts[0] });
-
-      // Clean up the uploaded file
-      fs.unlinkSync(req.file.path);
-
-      return NextResponse.json({ message: 'Certificate uploaded successfully', IpfsHash: IpfsHash }, { status: 200 });
-    } catch (error) {
-      console.error('Error uploading certificate:', error);
-      return NextResponse.json({ error: 'Failed to upload certificate' }, { status: 500 });
-    }
-  } else {
-    return NextResponse.json({ error: `Method ${req.method} Not Allowed` }, { status: 405 });
+    res.status(200).json({ message: 'Certificate uploaded successfully', fileHash: fileHash });
+  } catch (error) {
+    console.error('Error uploading certificate:', error);
+    res.status(500).json({ error: 'Failed to upload certificate' });
   }
 }
+
+
+

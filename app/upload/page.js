@@ -25,34 +25,18 @@ const CertificateUploadForm = () => {
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith('image/');
     if (!isImage) {
-      message.error('You can only upload image files!');
+      message.error('You can only upload image file!');
     }
     return isImage;
   };
 
 
-  const onFinish = async (formData) => { 
-  // Changed parameter name to formData'
-  const imageUrls = fileList.map(file => {
-    // If the file has a response and URL, it's been uploaded
-    if (file.response && file.response.url) {
-        return file.response.url;
-    }
-    // If the file is local and hasn't been uploaded, use the local preview URL
-    // Note: This assumes you're using a file reader or similar approach to generate previews
-    else if (file.thumbUrl) {
-        return file.thumbUrl;
-    }
-    // If using object URLs for local files (not yet uploaded)
-    else if (file.originFileObj) {
-        return URL.createObjectURL(file.originFileObj);
-    }
-    return null; // Return null if no URL is available
-}).filter(url => url != null); // Filter out any null values
+ const onFinish = async (formData) => { 
+ const imagePath = fileList[0].thumbUrl
+  formData.imagePath = imagePath;
+    console.log(formData)
 
-
-
-  console.log('Form data:', formData, imageUrls); // Log the form data
+  // Log the form data
     try {
       if (!window.ethereum) throw new Error('Please install MetaMask to use this feature!');
       
@@ -66,7 +50,7 @@ const CertificateUploadForm = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData, imageUrls) // Pass formData directly
+        body: JSON.stringify(formData) // Pass formData directly
       });
 
       if (response.ok) {
