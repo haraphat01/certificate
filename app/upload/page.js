@@ -9,6 +9,7 @@ import { UploadOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const CertificateUploadForm = () => {
+  const [accounts, setAccounts] = useState([]);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const router = useRouter();
@@ -33,8 +34,10 @@ const CertificateUploadForm = () => {
 
  const onFinish = async (formData) => { 
  const imagePath = fileList[0].thumbUrl
-  formData.imagePath = imagePath;
-    console.log(formData)
+formData.imagePath = imagePath;
+formData.accounts = accounts;
+
+    console.log(formData.accounts)
 
   // Log the form data
     try {
@@ -42,7 +45,7 @@ const CertificateUploadForm = () => {
       
       const web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
-      const accounts = await web3.eth.getAccounts();
+      setAccounts(await web3.eth.getAccounts());
       if (accounts.length === 0) throw new Error("Can't access any Ethereum accounts!");
 
       const response = await fetch('/api/uploadCertificate', {

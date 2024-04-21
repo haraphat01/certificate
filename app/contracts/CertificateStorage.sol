@@ -3,14 +3,24 @@ pragma solidity ^0.8.0;
 
 contract CertificateStorage {
     // Event to emit when a certificate is added. Useful for the frontend to listen to.
-    event CertificateAdded(uint256 indexed certificateId, string studentName, string studentId, address indexed issuer);
+    event CertificateAdded(
+        uint256 indexed certificateId,
+        string studentName,
+        string studentId,
+        string studentM,
+        string studentYear,
+        string fileHash,
+        address indexed issuer
+    );
 
     // Structure to hold certificate information
     struct Certificate {
         uint256 id;
         string studentName;
         string studentId;
-        string certificateHash; // Hash of the certificate file for verification
+        string studentM;
+        string studentYear;
+        string fileHash; // Hash of the certificate file for verification
         address issuer; // Address of the educational institution that issued the certificate
     }
 
@@ -21,15 +31,44 @@ contract CertificateStorage {
     uint256 public certificateCount;
 
     // Function to add a new certificate. Only callable by the contract owner (educational institution)
-    function addCertificate(string memory _studentName, string memory _studentId, string memory _certificateHash) public {
+    function addCertificate(
+        string memory _studentName,
+        string memory _studentId,
+        string memory _studentM,
+        string memory _studentYear,
+        string memory _fileHash
+    ) public {
         certificateCount++; // Increment the certificate count to get a new ID
-        certificates[certificateCount] = Certificate(certificateCount, _studentName, _studentId, _certificateHash, msg.sender);
-        emit CertificateAdded(certificateCount, _studentName, _studentId, msg.sender);
+        certificates[certificateCount] = Certificate(
+            certificateCount,
+            _studentName,
+            _studentId,
+            _studentM,
+            _studentYear,
+            _fileHash,
+            msg.sender
+        );
+        emit CertificateAdded(
+            certificateCount,
+            _studentName,
+            _studentId,
+            _studentM,
+            _studentYear,
+            _fileHash,
+            msg.sender
+        );
     }
 
     // Function to retrieve certificate details by its ID
-    function getCertificate(uint256 _certificateId) public view returns (Certificate memory) {
-        require(_certificateId > 0 && _certificateId <= certificateCount, "Certificate ID is out of bounds.");
+    function getCertificate(uint256 _certificateId)
+        public
+        view
+        returns (Certificate memory)
+    {
+        require(
+            _certificateId > 0 && _certificateId <= certificateCount,
+            "Certificate ID is out of bounds."
+        );
         return certificates[_certificateId];
     }
 }

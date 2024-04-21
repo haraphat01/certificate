@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Head from 'next/head';
 import { useMetaMask } from "metamask-react";
 import styles from '../styles/Home.module.css';
@@ -37,13 +37,13 @@ export default function Homepage() {
                     <div>
                         <p>Wallet connected: {account}</p>
                         <div className={styles.grid}>
-                        <button className={styles.card}>
-                            <Link href="/certificates">
-                                
+                            <button className={styles.card}>
+                                <Link href="/certificates">
+
                                     <h2>Search Certificates &rarr;</h2>
                                     <p>Find and verify student certificates.</p>
-                                
-                            </Link>
+
+                                </Link>
                             </button>
                             <button className={styles.card}>
                                 <Link href="/upload">
