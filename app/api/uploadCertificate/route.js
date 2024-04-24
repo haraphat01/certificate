@@ -65,15 +65,19 @@ export async function POST(req, res) {
       privateKey
     );
 
-    web3.eth.sendSignedTransaction(signedTransaction.rawTransaction, (error, transactionHash) => {
+    let hashTransaction = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction, (error, transactionHash) => {
       if (error) {
         console.error(error);
       } else {
         console.log('Transaction hash:', transactionHash);
       }
     });
-
-    return NextResponse.json({ error: 'Certificate uploaded successfully' }, { status: 200 })
+    console.log(hashTransaction.transactionHash,IpfsHash)
+    return NextResponse.json({
+      success: 'Certificate uploaded successfully',
+      hashTransaction: hashTransaction.transactionHash,
+      IpfsHash: IpfsHash
+    }, { status: 200 })
   } catch (error) {
     console.error('Error uploading certificate:', error);
     return NextResponse.json({ error: 'Failed to upload certificate' }, { status: 500 })

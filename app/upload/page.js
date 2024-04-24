@@ -12,6 +12,8 @@ const CertificateUploadForm = () => {
   const [accounts, setAccounts] = useState([]);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState(null);
   const router = useRouter();
 
   const handleUploadChange = ({ fileList }) => {
@@ -32,17 +34,19 @@ const CertificateUploadForm = () => {
   };
 
 
- const onFinish = async (formData) => { 
- const imagePath = fileList[0].thumbUrl
-formData.imagePath = imagePath;
-formData.accounts = accounts;
+  const onFinish = async (formData) => {
+    event.preventDefault();
+   setLoading(true)
+    const imagePath = fileList[0].thumbUrl
+    formData.imagePath = imagePath;
+    formData.accounts = accounts;
 
     console.log(formData.accounts)
 
-  // Log the form data
+    // Log the form data
     try {
       if (!window.ethereum) throw new Error('Please install MetaMask to use this feature!');
-      
+
       const web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
       setAccounts(await web3.eth.getAccounts());
@@ -57,8 +61,13 @@ formData.accounts = accounts;
       });
 
       if (response.ok) {
+        const result = await response.json();
+        setResponse(result);
+        console.log("response", result)
+      setLoading(false);
+       
         message.success('Certificate uploaded successfully!');
-        router.push('/');
+       
       } else {
         message.error('Failed to upload certificate. Please try again.');
       }
@@ -67,11 +76,11 @@ formData.accounts = accounts;
       message.error('An error occurred. Please try again.');
     }
   };
-
+console.log(response)
   return (
     <div className={styles.formContainer}>
       <Form
-       form={form}
+        form={form}
         name="upload_certificate" // Changed form name to follow convention
         onFinish={onFinish} // Used onFinish instead of onSubmit
         layout="vertical"
@@ -125,6 +134,14 @@ formData.accounts = accounts;
           <Button type="primary" htmlType="submit">Submit</Button>
         </Form.Item>
       </Form>
+
+      {loading && <p className="font-beautiful">Certificate uploading ....</p>}
+      {response && (
+        <div>
+          <p>Certificate Hash: {response.hashTransaction}</p>
+          <p>IPFS Hash: {response.IpfsHash}</p>
+        </div>
+      )}
     </div>
   );
 };
