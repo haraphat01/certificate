@@ -72,11 +72,11 @@ export async function POST(req, res) {
         console.log('Transaction hash:', transactionHash);
       }
     });
-    console.log(hashTransaction.transactionHash,IpfsHash)
     return NextResponse.json({
       success: 'Certificate uploaded successfully',
       hashTransaction: hashTransaction.transactionHash,
-      IpfsHash: IpfsHash
+      IpfsHash: IpfsHash,
+      name: name,
     }, { status: 200 })
   } catch (error) {
     console.error('Error uploading certificate:', error);

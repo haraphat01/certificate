@@ -36,7 +36,7 @@ const CertificateUploadForm = () => {
 
   const onFinish = async (formData) => {
     event.preventDefault();
-   setLoading(true)
+    setLoading(true)
     const imagePath = fileList[0].thumbUrl
     formData.imagePath = imagePath;
     formData.accounts = accounts;
@@ -63,11 +63,10 @@ const CertificateUploadForm = () => {
       if (response.ok) {
         const result = await response.json();
         setResponse(result);
-        console.log("response", result)
-      setLoading(false);
-       
+        setLoading(false);
+        form.resetFields();
         message.success('Certificate uploaded successfully!');
-       
+
       } else {
         message.error('Failed to upload certificate. Please try again.');
       }
@@ -76,7 +75,7 @@ const CertificateUploadForm = () => {
       message.error('An error occurred. Please try again.');
     }
   };
-console.log(response)
+  console.log(response)
   return (
     <div className={styles.formContainer}>
       <Form
@@ -138,6 +137,8 @@ console.log(response)
       {loading && <p className="font-beautiful">Certificate uploading ....</p>}
       {response && (
         <div>
+          <h1>Student Details</h1>
+          <p> Student Name: {response.name}</p>
           <p>Certificate Hash: {response.hashTransaction}</p>
           <p>IPFS Hash: {response.IpfsHash}</p>
         </div>
