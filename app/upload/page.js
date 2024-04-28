@@ -12,6 +12,8 @@ const CertificateUploadForm = () => {
   const [accounts, setAccounts] = useState([]);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState(null);
   const router = useRouter();
 
   const handleUploadChange = ({ fileList }) => {
@@ -31,18 +33,29 @@ const CertificateUploadForm = () => {
     return isImage;
   };
 
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
 
- const onFinish = async (formData) => { 
- const imagePath = fileList[0].thumbUrl
-formData.imagePath = imagePath;
-formData.accounts = accounts;
+  const onFinish = async (formData) => {
+    console.log(formData)
+    event.preventDefault();
+    setLoading(true)
+    const imageFile = fileList[0].originFileObj
+    const imagePath = await getBase64(imageFile);
+    formData.imagePath = imagePath;
+    formData.accounts = accounts;
 
-    console.log(formData.accounts)
 
-  // Log the form data
+    // Log the form data
     try {
       if (!window.ethereum) throw new Error('Please install MetaMask to use this feature!');
-      
+
       const web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
       setAccounts(await web3.eth.getAccounts());
@@ -57,8 +70,12 @@ formData.accounts = accounts;
       });
 
       if (response.ok) {
+        const result = await response.json();
+        setResponse(result);
+        setLoading(false);
+        form.resetFields();
         message.success('Certificate uploaded successfully!');
-        router.push('/');
+
       } else {
         message.error('Failed to upload certificate. Please try again.');
       }
@@ -67,11 +84,11 @@ formData.accounts = accounts;
       message.error('An error occurred. Please try again.');
     }
   };
-
+  console.log(response)
   return (
     <div className={styles.formContainer}>
       <Form
-       form={form}
+        form={form}
         name="upload_certificate" // Changed form name to follow convention
         onFinish={onFinish} // Used onFinish instead of onSubmit
         layout="vertical"
@@ -112,6 +129,7 @@ formData.accounts = accounts;
             fileList={fileList}
             onChange={handleUploadChange}
             onRemove={handleRemove}
+            maxCount={1}
             beforeUpload={beforeUpload}
             multiple={false} // Changed to allow only one file upload
             listType="picture-card"
@@ -125,6 +143,16 @@ formData.accounts = accounts;
           <Button type="primary" htmlType="submit">Submit</Button>
         </Form.Item>
       </Form>
+
+      {loading && <p className="font-beautiful">Certificate uploading ....</p>}
+      {response && (
+        <div>
+          <h1>Student Details</h1>
+          <p> Student Name: {response.name}</p>
+          <p>Certificate Hash: {response.hashTransaction}</p>
+          <p>IPFS Hash: {response.IpfsHash}</p>
+        </div>
+      )}
     </div>
   );
 };
