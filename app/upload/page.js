@@ -33,15 +33,24 @@ const CertificateUploadForm = () => {
     return isImage;
   };
 
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
 
   const onFinish = async (formData) => {
+    console.log(formData)
     event.preventDefault();
     setLoading(true)
-    const imagePath = fileList[0].thumbUrl
+    const imageFile = fileList[0].originFileObj
+    const imagePath = await getBase64(imageFile);
     formData.imagePath = imagePath;
     formData.accounts = accounts;
 
-    console.log(formData.accounts)
 
     // Log the form data
     try {
@@ -120,6 +129,7 @@ const CertificateUploadForm = () => {
             fileList={fileList}
             onChange={handleUploadChange}
             onRemove={handleRemove}
+            maxCount={1}
             beforeUpload={beforeUpload}
             multiple={false} // Changed to allow only one file upload
             listType="picture-card"

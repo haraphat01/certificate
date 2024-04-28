@@ -1,14 +1,22 @@
 "use client"
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Head from 'next/head';
 import styles from '../../app/styles/SearchPage.module.css';
 import Web3 from 'web3';
 import { useForm } from 'react-hook-form';
+import { Form, Input, Upload, Button, Select, message, Alert } from 'antd';
+
 
 const SearchCertificates = () => {
+  const [form] = Form.useForm();
   const { register, handleSubmit, errors } = useForm();
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+
   const onSearchSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await fetch('/api/searchCertificate', {
         method: 'POST',
@@ -18,17 +26,24 @@ const SearchCertificates = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch search results.');
-      }
+      if (response.ok) {
+        let result = await response.json();
 
-      const results = await response.json();
-      setSearchResults(results);
+        setSearchResults(result);
+      } else {
+        console.error('Failed to send data:', response.statusText);
+      }
     } catch (error) {
-      console.error('Error searching certificates:', error);
-      alert('An error occurred while searching. Please try again.');
+      Alert('Error:', error);
+    } finally {
+      setLoading(false);
+      form.resetFields()
     }
   };
+
+
+  // Assuming the base64 string is in the 'image' field
+  console.log("data from backend", searchResults)
 
   return (
     <div className={styles.container}>
@@ -44,31 +59,40 @@ const SearchCertificates = () => {
         </h1>
 
         <div className={styles.searchFormContainer}>
-          <form onSubmit={handleSubmit(onSearchSubmit)} className={styles.searchForm}>
-            <div className={styles.formGroup}>
-              <label htmlFor="searchTerm">Search Term:</label>
-              <input name="searchTerm" id="searchTerm"   input {...register('test', { required: true })} />
-              {/* {errors.searchTerm && <span>This field is required</span>} */}
-            </div>
-            <button type="submit" className={styles.searchButton}>Search</button>
-          </form>
+          <Form form={form}
+            name="upload_certificate" // Changed form name to follow convention
+            onFinish={onSearchSubmit} // Used onFinish instead of onSubmit
+            layout="vertical"
+            initialValues={{ remember: true }}
+            className="w-full sm:w-1/2" >
+            <Form.Item
+              name="hash"
+              label={<label className="whiteLabel">Student Name</label>}
+              rules={[{ required: true, message: 'Please enter student hash code' }]}
+            >
+              <Input placeholder="Enter Student Name" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">Submit</Button>
+            </Form.Item>
+          </Form>
+
+
+        </div>
+        <div className={styles.container}>
+          {/* ... */}
+          {loading ? (
+            <p>Confirming the certificate, please wait ....</p>
+          ) : searchResults ? (
+            <Image src={`data:image/png;base64,${searchResults}`} alt="Fetched from IPFS" width={500} height={500}
+            />
+          ) : null}
+          {/* ... */}
         </div>
 
-        {searchResults.length > 0 && (
-          <div className={styles.resultsContainer}>
-            <h2>Search Results</h2>
-            <ul className={styles.resultsList}>
-              {searchResults.map((result, index) => (
-                <li key={index} className={styles.resultItem}>
-                  <p><strong>Name:</strong> {result.name}</p>
-                  <p><strong>Student ID:</strong> {result.studentId}</p>
-                  <p><strong>Certificate ID:</strong> {result.certificateId}</p>
-                  <p><strong>Transaction Hash:</strong> {result.transactionHash}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+
+
+
       </main>
     </div>
   );
