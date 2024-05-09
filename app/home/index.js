@@ -22,7 +22,7 @@ export default function Homepage() {
 
             <main className={styles.main}>
                 <h1 className={styles.title}>
-                    Welcome to the Student Certificate Blockchain Platform
+                     Student Certificate Blockchain Platform
                 </h1>
 
                 <p className={styles.description}>

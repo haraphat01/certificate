@@ -23,3 +23,8 @@
     text-wrap: balance;
   }
 }
+
+.Navbar {
+  width: 80%;
+  margin: 0 auto;
+}

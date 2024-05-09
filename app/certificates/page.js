@@ -67,10 +67,10 @@ const SearchCertificates = () => {
             className="w-full sm:w-1/2" >
             <Form.Item
               name="hash"
-              label={<label className="whiteLabel">Student Name</label>}
-              rules={[{ required: true, message: 'Please enter student hash code' }]}
+              label={<label className="whiteLabel">Student </label>}
+              rules={[{ required: true, message: 'Please enter the certificate hash' }]}
             >
-              <Input placeholder="Enter Student Name" />
+              <Input placeholder="Please enter the certificate hash" />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">Submit</Button>
@@ -80,14 +80,12 @@ const SearchCertificates = () => {
 
         </div>
         <div className={styles.container}>
-          {/* ... */}
-          {loading ? (
-            <p>Confirming the certificate, please wait ....</p>
-          ) : searchResults ? (
-            <Image src={`data:image/png;base64,${searchResults}`} alt="Fetched from IPFS" width={500} height={500}
-            />
-          ) : null}
-          {/* ... */}
+        {loading && <p className="font-beautiful">Confirming the certificate, please wait ....</p>}
+        
+        {searchResults && searchResults.length > 0 && (
+  <Image src={`data:image/png;base64,${searchResults}`} alt="Fetched from IPFS" width={500} height={500} />
+)}
+         
         </div>
 
 

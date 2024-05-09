@@ -29,7 +29,7 @@ export async function POST(req, res) {
     const pinataRes = await pinata.pinFileToIPFS(stream, { pinataMetadata: { name: name } });;
     // console.log('pinataRes:', pinataRes);
     const { IpfsHash } = await pinataRes
-    // console.log('IpfsHash:', IpfsHash);
+    console.log('IpfsHash:', IpfsHash);
     // console.log("Ipfs response", IpfsHash);
     // Connect to Ethereum via Web3
 
@@ -49,7 +49,7 @@ export async function POST(req, res) {
       to: contractAddress,
       value: '0x0',
       gas: 300000,
-      maxFeePerGas: 10000000000, // Adjust the maxFeePerGas value
+      maxFeePerGas: 25000000000, // Adjust the maxFeePerGas value
       maxPriorityFeePerGas: 2500000000, // Adjust the maxPriorityFeePerGas value
       data: contract.methods.addCertificate(
         name,
