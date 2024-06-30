@@ -14,7 +14,7 @@ const CertificateUploadForm = () => {
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleUploadChange = ({ fileList }) => {
     setFileList(fileList);

@@ -13,6 +13,7 @@ const web3 = new Web3(
   ),
 );
 
+
 export async function POST(req, res) {
   let passedValue = await new Response(req.body).text();
   let bodyreq = JSON.parse(passedValue);

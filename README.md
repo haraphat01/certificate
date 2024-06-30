@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 
 # Decentralized Student Certificate Management App
 
@@ -50,7 +48,7 @@ Ensure to set these variables with appropriate values before running the project
 
 - Ethereum Blockchain
 - Solidity Smart Contracts
-- React.js
+- Next.js
 - IPFS (InterPlanetary File System)
 - MetaMask Wallet
 
