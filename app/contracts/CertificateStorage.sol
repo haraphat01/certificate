@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 contract CertificateStorage {
     // Event to emit when a certificate is added. Useful for the frontend to listen to.
     event CertificateAdded(
-        uint256 indexed certificateId,
         string studentName,
         string studentId,
         string studentM,
@@ -15,7 +14,6 @@ contract CertificateStorage {
 
     // Structure to hold certificate information
     struct Certificate {
-        uint256 id;
         string studentName;
         string studentId;
         string studentM;
@@ -25,10 +23,21 @@ contract CertificateStorage {
     }
 
     // Mapping of certificate ID to Certificate object
-    mapping(uint256 => Certificate) public certificates;
+    mapping(string => Certificate) public certificates;
 
-    // Counter to keep track of certificate IDs
-    uint256 public certificateCount;
+    // Address of the contract owner
+    address public owner;
+
+    // Constructor to set the contract owner
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // Modifier to restrict access to the owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the contract owner can call this function.");
+        _;
+    }
 
     // Function to add a new certificate. Only callable by the contract owner (educational institution)
     function addCertificate(
@@ -37,10 +46,8 @@ contract CertificateStorage {
         string memory _studentM,
         string memory _studentYear,
         string memory _fileHash
-    ) public {
-        certificateCount++; // Increment the certificate count to get a new ID
-        certificates[certificateCount] = Certificate(
-            certificateCount,
+    ) public onlyOwner {
+        certificates[_studentId] = Certificate(
             _studentName,
             _studentId,
             _studentM,
@@ -49,7 +56,6 @@ contract CertificateStorage {
             msg.sender
         );
         emit CertificateAdded(
-            certificateCount,
             _studentName,
             _studentId,
             _studentM,
@@ -57,18 +63,5 @@ contract CertificateStorage {
             _fileHash,
             msg.sender
         );
-    }
-
-    // Function to retrieve certificate details by its ID
-    function getCertificate(uint256 _certificateId)
-        public
-        view
-        returns (Certificate memory)
-    {
-        require(
-            _certificateId > 0 && _certificateId <= certificateCount,
-            "Certificate ID is out of bounds."
-        );
-        return certificates[_certificateId];
     }
 }

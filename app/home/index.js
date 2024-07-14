@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function Homepage() {
     const { status, connect, account } = useMetaMask();
-
+    console.log("Status:", status);
     useEffect(() => {
         if (status === "unavailable") alert("MetaMask is not installed!");
     }, [status]);
@@ -28,10 +28,11 @@ export default function Homepage() {
                 <p className={styles.description}>
                     Connect your MetaMask wallet to get started
                 </p>
-
+                {console.log("Status:", status)}
                 {status === "notConnected" && (
                     <button className={styles.button} onClick={connect}>Connect MetaMask</button>
-                )}
+                )
+                }
 
                 {status === "connected" && (
                     <div>
